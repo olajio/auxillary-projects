@@ -1,6 +1,8 @@
 # auxillary-projects
 ## Shell Scripting To Create Users  
 
+**Note:** You can as well access the content of this repo in the following link, in case you prefer some more colorful and friendly view: https://docs.google.com/document/d/1a23VZAxYO3I_moPLia5wUEssgIA0tvRjqgsjNk2ISdo/edit?usp=sharing
+
 ### Project Requirement
 - In this project, you need to onboard 20 new Linux users onto a server. Create a shell script that reads a csv file that contains the first name of the users to be onboarded.
 - Create the project folder called **Shell**
@@ -55,7 +57,6 @@ kmaSGj362OnCCNAAAACWRhcmVARGFyZQE=
 -----END OPENSSH PRIVATE KEY-----
 ```
 
-**Note:** You can as well access the content of this repo in the following link, in case you prefer some more colorful and friendly view: https://docs.google.com/document/d/1a23VZAxYO3I_moPLia5wUEssgIA0tvRjqgsjNk2ISdo/edit?usp=sharing
 
 To start with, I created the Shell folder and the names.csv file in it.
 ```

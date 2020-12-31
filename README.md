@@ -55,7 +55,7 @@ kmaSGj362OnCCNAAAACWRhcmVARGFyZQE=
 -----END OPENSSH PRIVATE KEY-----
 ```
 
-**Note:** You can as well access the content of this repo in the following link, in case you prefer some ore colorful view: https://docs.google.com/document/d/1a23VZAxYO3I_moPLia5wUEssgIA0tvRjqgsjNk2ISdo/edit?usp=sharing
+**Note:** You can as well access the content of this repo in the following link, in case you prefer some more colorful and friendly view: https://docs.google.com/document/d/1a23VZAxYO3I_moPLia5wUEssgIA0tvRjqgsjNk2ISdo/edit?usp=sharing
 
 To start with, I created the Shell folder and the names.csv file in it.
 ```

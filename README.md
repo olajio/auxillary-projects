@@ -60,8 +60,7 @@ kmaSGj362OnCCNAAAACWRhcmVARGFyZQE=
 To start with, I created the Shell folder and the names.csv file in it.
 ```
 ubuntu@ip-172-31-20-117:~$ cd Shell/
-ubuntu@ip-172-31-20-117:~/Shell$ ls
-names.csv
+ubuntu@ip-172-31-20-117:~/Shell$ 
 ubuntu@ip-172-31-20-117:~/Shell$ cat names.csv 
 olamide
 olakunle
@@ -74,6 +73,15 @@ chi
 laniya
 olu
 kemi
+fasesimi
+davies
+olajide
+tim
+ayo
+abimbola
+augustine
+hannah
+hadassah
 ```
  
 Since I’ll be repeating the same steps for the names, I decided to use the for loop. For a start, I tried to use the for loop to test how I can iterate through the names.
@@ -93,6 +101,15 @@ Hello chi
 Hello laniya
 Hello olu
 Hello kemi
+Hello fasesimi
+Hello davies
+Hello olajide
+Hello tim
+Hello ayo
+Hello abimbola
+Hello augustine
+Hello hannah
+Hello hadassah
 ```
  
 Creating a testgroup and added a testuser to it
@@ -131,15 +148,6 @@ ubuntu@ip-172-31-20-117:~$ if [ $(getent passwd testuser2) ] ; then     echo use
 user testuser doesn't exists
 ```
  
-In my script, I will simply be testing if a user does not exist, then I’ll go ahead and create the user. See sample command below where I echoed a string in place of the actual actions I would be performing.
-```
-ubuntu@ip-172-31-20-117:~$ if [ ! $(getent passwd testuser2) ]
-> then
->     echo "create user"
-> fi 
-create user
-```
- 
 ### Converting the different commands into a script
 Created the developers group. Note, group ID is 1001
 ```
@@ -158,8 +166,11 @@ echo "Creating users..."
 sleep 2
 for name in $(cat names.csv)
 do
-  if [ ! $(getent passwd $name) ]
+  if [ $(getent passwd $name) ]
   then
+    echo "User $name already exists"
+    echo ""
+  else
     useradd -g developers -s /bin/bash -m -d /home/$name $name
     mkdir /home/$name/.ssh
     echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCzKZyicHxIkklSrNlxsJyyTrcIdBIt84Z0cQb3R4k0jH53kxkaT5hP8tfWTe62LXi7vV86fY+SX7TBNM76XGCbw/6vrMGegm6J1x2i1AiLNwq5nqTjOGn0AIwku4IlCCLAB7tdfRyVuCarmBlwny3lzRyybIUAWXR/D6vpN09MsDILbKdhay+Q/p9OUBMSLPqXdY/QIh/Oe3rVv1lwY3AohNfq7V3tO88zKswfA5iiexNiSYX1myT0OrX8cBE771j9quoNZhQgaLI1mIMtAvnHQChrn9k2nUaO/BMBCQGol5XzGv1ado7hgoVPoluIUD+FGNo/pH4zcmDLICH6drXY/C9MESnkMUPLFxBXKO/OitApY71vRao9nAhAwpVMsy6FqiOb5uawhvhoHYIHTV/f4EtagVagRMP2PxYMYR6jykIV4MPJTkCm+lGhTyMlRu+qRQjdLn8AAtHf4aEV8dIkoGh088DI7eA/4o0wz4OV4upH5ewSFS+5IHmRECEW5Nc=" > /home/$name/.ssh/authorized_keys
@@ -193,6 +204,24 @@ User laniya successfully created
 User olu successfully created
  
 User kemi successfully created
+ 
+User fasesimi successfully created
+ 
+User davies successfully created
+ 
+User olajide successfully created
+ 
+User tim successfully created
+ 
+User ayo successfully created
+ 
+User abimbola successfully created
+ 
+User augustine successfully created
+ 
+User hannah successfully created
+ 
+User hadassah successfully created
 ```
  
  
@@ -210,13 +239,28 @@ chi:x:1008:1001::/home/chi:/bin/bash
 laniya:x:1009:1001::/home/laniya:/bin/bash
 olu:x:1010:1001::/home/olu:/bin/bash
 kemi:x:1011:1001::/home/kemi:/bin/bash
+fasesimi:x:1012:1001::/home/fasesimi:/bin/bash
+davies:x:1013:1001::/home/davies:/bin/bash
+olajide:x:1014:1001::/home/olajide:/bin/bash
+tim:x:1015:1001::/home/tim:/bin/bash
+ayo:x:1016:1001::/home/ayo:/bin/bash
+abimbola:x:1017:1001::/home/abimbola:/bin/bash
+augustine:x:1018:1001::/home/augustine:/bin/bash
+hannah:x:1019:1001::/home/hannah:/bin/bash
+hadassah:x:1020:1001::/home/hadassah:/bin/bash
 ubuntu@ip-172-31-20-117:~/Shell$ 
 ```
  
 Please see the output of the tree command to showing that default home directory, .ssh directory and authorized_keys file for each user were created as expected
 ```
-ubuntu@ip-172-31-20-117:~/Shell$ tree -a /home/
-/home/
+ubuntu@ip-172-31-20-117:~/Shell$ tree -a /home
+/home
+├── abimbola
+│   ├── .bash_logout
+│   ├── .bashrc
+│   ├── .profile
+│   └── .ssh
+│       └── authorized_keys
 ├── adeyemi
 │   ├── .bash_logout
 │   ├── .bashrc
@@ -229,6 +273,18 @@ ubuntu@ip-172-31-20-117:~/Shell$ tree -a /home/
 │   ├── .profile
 │   └── .ssh
 │       └── authorized_keys
+├── augustine
+│   ├── .bash_logout
+│   ├── .bashrc
+│   ├── .profile
+│   └── .ssh
+│       └── authorized_keys
+├── ayo
+│   ├── .bash_logout
+│   ├── .bashrc
+│   ├── .profile
+│   └── .ssh
+│       └── authorized_keys
 ├── byron
 │   ├── .bash_logout
 │   ├── .bashrc
@@ -236,6 +292,30 @@ ubuntu@ip-172-31-20-117:~/Shell$ tree -a /home/
 │   └── .ssh
 │       └── authorized_keys
 ├── chi
+│   ├── .bash_logout
+│   ├── .bashrc
+│   ├── .profile
+│   └── .ssh
+│       └── authorized_keys
+├── davies
+│   ├── .bash_logout
+│   ├── .bashrc
+│   ├── .profile
+│   └── .ssh
+│       └── authorized_keys
+├── fasesimi
+│   ├── .bash_logout
+│   ├── .bashrc
+│   ├── .profile
+│   └── .ssh
+│       └── authorized_keys
+├── hadassah
+│   ├── .bash_logout
+│   ├── .bashrc
+│   ├── .profile
+│   └── .ssh
+│       └── authorized_keys
+├── hannah
 │   ├── .bash_logout
 │   ├── .bashrc
 │   ├── .profile
@@ -254,6 +334,12 @@ ubuntu@ip-172-31-20-117:~/Shell$ tree -a /home/
 │   └── .ssh
 │       └── authorized_keys
 ├── laniya
+│   ├── .bash_logout
+│   ├── .bashrc
+│   ├── .profile
+│   └── .ssh
+│       └── authorized_keys
+├── olajide
 │   ├── .bash_logout
 │   ├── .bashrc
 │   ├── .profile
@@ -283,6 +369,12 @@ ubuntu@ip-172-31-20-117:~/Shell$ tree -a /home/
 │   ├── .profile
 │   └── .ssh
 │       └── authorized_keys
+├── tim
+│   ├── .bash_logout
+│   ├── .bashrc
+│   ├── .profile
+│   └── .ssh
+│       └── authorized_keys
 └── ubuntu
     ├── .bash_history
     ├── .bash_logout
@@ -295,11 +387,12 @@ ubuntu@ip-172-31-20-117:~/Shell$ tree -a /home/
     ├── .sudo_as_admin_successful
     ├── .viminfo
     └── Shell
-        ├── onboarding_user.sh
         ├── deleteuser.sh
-        └── names.csv
+        ├── names.csv
+        └── onboarding_user.sh
  
-26 directories, 55 files
+44 directories, 91 files
+ubuntu@ip-172-31-20-117:~/Shell$
 ``` 
 As an extra exercise, I created a script to delete the users that I have just created. See the script below:
 ```
@@ -340,6 +433,10 @@ Be aware that this script will remove the users and all of their data
 If you would like to back up the users' data before deleting them, PRESS 'a' or 'A' to abort now. To continue deleting the user and the data, please y or Y
 y
 ```
+Be aware that this script will remove the users and all of their data
+ 
+If you would like to back up the users' data before deleting them, PRESS 'a' or 'A' to abort now. To continue deleting the user and the data, please y or Y
+y
 Deleting users and their data...
 User: olamide and all its files and folders successfully deleted
  
@@ -363,7 +460,25 @@ User: olu and all its files and folders successfully deleted
  
 User: kemi and all its files and folders successfully deleted
  
-ubuntu@ip-172-31-20-117:~/Shell$ 
+User: fasesimi and all its files and folders successfully deleted
+ 
+User: davies and all its files and folders successfully deleted
+ 
+User: olajide and all its files and folders successfully deleted
+ 
+User: tim and all its files and folders successfully deleted
+ 
+User: ayo and all its files and folders successfully deleted
+ 
+User: abimbola and all its files and folders successfully deleted
+ 
+User: augustine and all its files and folders successfully deleted
+ 
+User: hannah and all its files and folders successfully deleted
+ 
+User: hadassah and all its files and folders successfully deleted
+ 
+ubuntu@ip-172-31-20-117:~/Shell$
 ```
  
  

@@ -171,6 +171,15 @@ do
   then
     echo "User $name already exists"
     echo ""
+    if [ ! -e /home/$name ]
+    then
+      mkdir /home/$name
+      mkdir /home/$name/.ssh
+      echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCzKZyicHxIkklSrNlxsJyyTrcIdBIt84Z0cQb3R4k0jH53kxkaT5hP8tfWTe62LXi7vV86fY+SX7TBNM76XGCbw/6vrMGegm6J1x2i1AiLNwq5nqTjOGn0AIwku4IlCCLAB7tdfRyVuCarmBlwny3lzRyybIUAWXR/D6vpN09MsDILbKdhay+Q/p9OUBMSLPqXdY/QIh/Oe3rVv1lwY3AohNfq7V3tO88zKswfA5iiexNiSYX1myT0OrX8cBE771j9quoNZhQgaLI1mIMtAvnHQChrn9k2nUaO/BMBCQGol5XzGv1ado7hgoVPoluIUD+FGNo/pH4zcmDLICH6drXY/C9MESnkMUPLFxBXKO/OitApY71vRao9nAhAwpVMsy6FqiOb5uawhvhoHYIHTV/f4EtagVagRMP2PxYMYR6jykIV4MPJTkCm+lGhTyMlRu+qRQjdLn8AAtHf4aEV8dIkoGh088DI7eA/4o0wz4OV4upH5ewSFS+5IHmRECEW5Nc=" > /home/$name/.ssh/authorized_keys
+      echo "User: $name does NOT have a default home directory, but it has now been created for the user"
+      echo "Public ssh key has also been created for user: $name"
+      echo ""
+    fi
   else
     useradd -g developers -s /bin/bash -m -d /home/$name $name
     mkdir /home/$name/.ssh
@@ -401,6 +410,7 @@ As an extra exercise, I created a script to delete the users that I have just cr
  
 clear
 echo "Be aware that this script will remove the users and all of their data"
+echo ""
 sleep 2
 echo "If you would like to back up the users' data before deleting them, PRESS 'a' or 'A' to abort now. To continue deleting the user and the data, please y or Y"
 read response
@@ -417,9 +427,16 @@ case $response in
       if [ $(getent passwd $name) ]
       then
         userdel $name
-        rm -rf /home/$name
-        echo "User: $name and all its files and folders successfully deleted"
-        echo ""
+        if [ -e /home/$name ]
+        then
+          rm -rf /home/$name
+          echo "User: $name and all its files and folders successfully deleted"
+          echo ""
+        else
+          echo "User $name has no default home directory"
+          echo "User $name has been successfully removed"
+          echo ""
+        fi
       else
         echo "User: $name does NOT exist"
       fi

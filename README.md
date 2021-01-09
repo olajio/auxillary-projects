@@ -150,6 +150,18 @@ user testuser doesn't exists
 ```
  
 ### Converting the different commands into a script
+
+First I copied the rsa key to a file named authorized_keys in the Shell directory
+```
+ubuntu@ip-172-31-20-117:~$ cd Shell/
+ 
+ubuntu@ip-172-31-20-117:~/Shell$ ls
+authorized_keys  deleteuser.sh  names.csv  onboarding_user.sh
+ 
+ubuntu@ip-172-31-20-117:~/Shell$ cat authorized_keys 
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCzKZyicHxIkklSrNlxsJyyTrcIdBIt84Z0cQb3R4k0jH53kxkaT5hP8tfWTe62LXi7vV86fY+SX7TBNM76XGCbw/6vrMGegm6J1x2i1AiLNwq5nqTjOGn0AIwku4IlCCLAB7tdfRyVuCarmBlwny3lzRyybIUAWXR/D6vpN09MsDILbKdhay+Q/p9OUBMSLPqXdY/QIh/Oe3rVv1lwY3AohNfq7V3tO88zKswfA5iiexNiSYX1myT0OrX8cBE771j9quoNZhQgaLI1mIMtAvnHQChrn9k2nUaO/BMBCQGol5XzGv1ado7hgoVPoluIUD+FGNo/pH4zcmDLICH6drXY/C9MESnkMUPLFxBXKO/OitApY71vRao9nAhAwpVMsy6FqiOb5uawhvhoHYIHTV/f4EtagVagRMP2PxYMYR6jykIV4MPJTkCm+lGhTyMlRu+qRQjdLn8AAtHf4aEV8dIkoGh088DI7eA/4o0wz4OV4upH5ewSFS+5IHmRECEW5Nc=
+```
+ 
 Created the developers group. Note, group ID is 1001
 ```
 ubuntu@ip-172-31-20-117:~$ sudo groupadd developers
@@ -157,37 +169,66 @@ ubuntu@ip-172-31-20-117:~$ sudo cat /etc/group | grep developers
 developers:x:1001:
 ```
  
- 
 See the script to create the users:
 ```
 #!/bin/bash
  
 clear
-echo "Creating users..."
-sleep 2
-for name in $(cat names.csv)
-do
-  if [ $(getent passwd $name) ]
-  then
-    echo "User $name already exists"
-    echo ""
-    if [ ! -e /home/$name ]
+echo "To enter username from keyboard, enter '1'. To read names of users to be created from file, enter '2'"
+read response
+case $response in
+  1)
+    echo "Enter username"
+    read name
+    if [ $(getent passwd $name) ]
     then
-      mkdir /home/$name
-      mkdir /home/$name/.ssh
-      echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCzKZyicHxIkklSrNlxsJyyTrcIdBIt84Z0cQb3R4k0jH53kxkaT5hP8tfWTe62LXi7vV86fY+SX7TBNM76XGCbw/6vrMGegm6J1x2i1AiLNwq5nqTjOGn0AIwku4IlCCLAB7tdfRyVuCarmBlwny3lzRyybIUAWXR/D6vpN09MsDILbKdhay+Q/p9OUBMSLPqXdY/QIh/Oe3rVv1lwY3AohNfq7V3tO88zKswfA5iiexNiSYX1myT0OrX8cBE771j9quoNZhQgaLI1mIMtAvnHQChrn9k2nUaO/BMBCQGol5XzGv1ado7hgoVPoluIUD+FGNo/pH4zcmDLICH6drXY/C9MESnkMUPLFxBXKO/OitApY71vRao9nAhAwpVMsy6FqiOb5uawhvhoHYIHTV/f4EtagVagRMP2PxYMYR6jykIV4MPJTkCm+lGhTyMlRu+qRQjdLn8AAtHf4aEV8dIkoGh088DI7eA/4o0wz4OV4upH5ewSFS+5IHmRECEW5Nc=" > /home/$name/.ssh/authorized_keys
-      echo "User: $name does NOT have a default home directory, but it has now been created for the user"
-      echo "Public ssh key has also been created for user: $name"
+      echo "User $name already exists"
       echo ""
-    fi
-  else
-    useradd -g developers -s /bin/bash -m -d /home/$name $name
-    mkdir /home/$name/.ssh
-    echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCzKZyicHxIkklSrNlxsJyyTrcIdBIt84Z0cQb3R4k0jH53kxkaT5hP8tfWTe62LXi7vV86fY+SX7TBNM76XGCbw/6vrMGegm6J1x2i1AiLNwq5nqTjOGn0AIwku4IlCCLAB7tdfRyVuCarmBlwny3lzRyybIUAWXR/D6vpN09MsDILbKdhay+Q/p9OUBMSLPqXdY/QIh/Oe3rVv1lwY3AohNfq7V3tO88zKswfA5iiexNiSYX1myT0OrX8cBE771j9quoNZhQgaLI1mIMtAvnHQChrn9k2nUaO/BMBCQGol5XzGv1ado7hgoVPoluIUD+FGNo/pH4zcmDLICH6drXY/C9MESnkMUPLFxBXKO/OitApY71vRao9nAhAwpVMsy6FqiOb5uawhvhoHYIHTV/f4EtagVagRMP2PxYMYR6jykIV4MPJTkCm+lGhTyMlRu+qRQjdLn8AAtHf4aEV8dIkoGh088DI7eA/4o0wz4OV4upH5ewSFS+5IHmRECEW5Nc=" > /home/$name/.ssh/authorized_keys
-    echo "User $name successfully created"
-    echo ""
-  fi
-done
+      if [ ! -e /home/$name ]
+      then
+        mkdir /home/$name
+        mkdir /home/$name/.ssh
+        cp authorized_keys /home/$name/.ssh/authorized_keys
+        echo "User: $name does NOT have a default home directory, but it has now been created for the user"
+        echo "Public ssh key has also been created for user: $name"
+        echo ""
+      fi
+    else
+      useradd -g developers -s /bin/bash -m -d /home/$name $name
+      mkdir /home/$name/.ssh
+      cp authorized_keys /home/$name/.ssh/authorized_keys
+      echo "User $name successfully created"
+      echo ""
+    fi;;
+  2)
+    echo "Creating users..."
+    sleep 1
+    for name in $(cat names.csv)
+    do
+      if [ $(getent passwd $name) ]
+      then
+        echo "User $name already exists"
+        echo ""
+        if [ ! -e /home/$name ]
+        then
+          mkdir /home/$name
+          mkdir /home/$name/.ssh
+          cp authorized_keys /home/$name/.ssh/authorized_keys
+          echo "User: $name does NOT have a default home directory, but it has now been  created for the user"
+          echo "Public ssh key has also been created for user: $name"
+          echo ""
+        fi
+      else
+        useradd -g developers -s /bin/bash -m -d /home/$name $name
+        mkdir /home/$name/.ssh
+        cp authorized_keys /home/$name/.ssh/authorized_keys
+        echo "User $name successfully created"
+        echo ""
+      fi
+    done;;
+  *)
+    echo "Invalid entry... Bye!";;
+esac
 ```
  
 See the `onboarding_user.sh` script in action:
@@ -411,8 +452,9 @@ As an extra exercise, I created a script to delete the users that I have just cr
 clear
 echo "Be aware that this script will remove the users and all of their data"
 echo ""
-sleep 2
-echo "If you would like to back up the users' data before deleting them, PRESS 'a' or 'A' to abort now. To continue deleting the user and the data, please y or Y"
+sleep 1
+echo ""
+echo "If you would like to back up the users' data before deleting them, PRESS 'a' or 'A' to abort now. To continue deleting the user and the data, PRESS y or Y"
 read response
 case $response in
   a|A)
@@ -420,83 +462,124 @@ case $response in
     sleep 2
     echo "Aborted";;
   y|Y)
-    echo "Deleting users and their data..."
-    sleep 2
-    for name in $(cat names.csv)
-    do
-      if [ $(getent passwd $name) ]
-      then
-        userdel $name
-        if [ -e /home/$name ]
+    echo "Do you want to delete users in the 'names.csv' file or you would like to enter the name of the user to delete?"
+    echo ""
+    echo "Enter 'k' or 'K' to enter username from keyboard, enter 'f' or 'F' read usernames from file"
+    read option
+    case $option in
+      k|K)
+        echo "Enter username to delete"
+        read username
+        if [ $(getent passwd $username) ]
         then
-          rm -rf /home/$name
-          echo "User: $name and all its files and folders successfully deleted"
-          echo ""
+          userdel $username
+          if [ -e /home/$username ]
+          then
+            rm -rf /home/$username
+            echo "User: $username and all its files and folders successfully deleted"
+            echo ""
+          else
+            echo "User $username has no default home directory"
+            echo "User $username has been successfully removed"
+            echo ""
+          fi
         else
-          echo "User $name has no default home directory"
-          echo "User $name has been successfully removed"
-          echo ""
-        fi
-      else
-        echo "User: $name does NOT exist"
-      fi
-    done;;
-  *) echo "Invalid response - Bye...";;
+          echo "User: $username does NOT exist"
+        fi;;
+      f|F)
+        echo "Deleting users and their data..."
+        sleep 2
+        for name in $(cat names.csv)
+        do
+          if [ $(getent passwd $name) ]
+          then
+            userdel $name
+            if [ -e /home/$name ]
+            then
+              rm -rf /home/$name
+              echo "User: $name and all its files and folders successfully deleted"
+              echo ""
+            else
+              echo "User $name has no default home directory"
+              echo "User $name has been successfully removed"
+              echo ""
+            fi
+          else
+            echo "User: $name does NOT exist"
+          fi
+        done;;
+      *)
+        echo "Invalid response - Bye...";;
+    esac;;
+  *)
+    echo "Invalid response - Bye...";;
 esac
 ```
+### How the deleteuser.sh script works:
+- It asks if you want to offboard/delete a users in the names.csv file or if you want to manually enter the name of the user
+- It warns the user about potential data loss if they used the script to delete a user
+- It prompts user to either abort the user delete or select y or Y to proceed to delete user
+- It reads users to be deleted from the names.csv file
+- If the user exists, it will go ahead and delete the user and it’s default home folder, if it has a default home folder. If the user does NOT have a default home folder, it proceeds to just delete the use
+
  
-See the `deleteuser.sh` script in action:
+### See the `deleteuser.sh` script in action:
 Be aware that this script will remove the users and all of their data
  
 If you would like to back up the users' data before deleting them, PRESS 'a' or 'A' to abort now. To continue deleting the user and the data, please y or Y
 y
 ```
 Be aware that this script will remove the users and all of their data
- 
-If you would like to back up the users' data before deleting them, PRESS 'a' or 'A' to abort now. To continue deleting the user and the data, please y or Y
+
+
+If you would like to back up the users' data before deleting them, PRESS 'a' or 'A' to abort now. To continue deleting the user and the data, PRESS y or Y
 y
+Do you want to delete users in the 'names.csv' file or you would like to enter the name of the user to delete?
+
+Enter 'k' or 'K' to enter username from keyboard, enter 'f' or 'F' read usernames from file
+f
 Deleting users and their data...
 User: olamide and all its files and folders successfully deleted
- 
+
 User: olakunle and all its files and folders successfully deleted
- 
+
 User: byron and all its files and folders successfully deleted
- 
+
 User: sonaike and all its files and folders successfully deleted
- 
+
 User: kehinde and all its files and folders successfully deleted
- 
+
 User: adeyemi and all its files and folders successfully deleted
- 
+
 User: akinlabi and all its files and folders successfully deleted
- 
+
 User: chi and all its files and folders successfully deleted
- 
+
 User: laniya and all its files and folders successfully deleted
- 
+
 User: olu and all its files and folders successfully deleted
- 
+
 User: kemi and all its files and folders successfully deleted
- 
+
 User: fasesimi and all its files and folders successfully deleted
- 
+
 User: davies and all its files and folders successfully deleted
- 
+
 User: olajide and all its files and folders successfully deleted
- 
+
 User: tim and all its files and folders successfully deleted
- 
+
 User: ayo and all its files and folders successfully deleted
- 
+
 User: abimbola and all its files and folders successfully deleted
- 
+
 User: augustine and all its files and folders successfully deleted
- 
+
 User: hannah and all its files and folders successfully deleted
- 
+
 User: hadassah and all its files and folders successfully deleted
- 
-ubuntu@ip-172-31-20-117:~/Shell$
+
+ubuntu@ip-172-31-20-117:~/Shell$ 
 ```
  
  
@@ -589,5 +672,3 @@ olamide@ip-172-31-20-117:~$
 olamide@ip-172-31-20-117:~$ pwd
 /home/olamide
 ```
- 
-
